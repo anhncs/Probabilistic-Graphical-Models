@@ -1,0 +1,16 @@
+#!/bin/bash
+echo "libDAI  -  A free/open source C++ library for Discrete Approximate Inference" > README
+echo >> README
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" >> README
+echo >> README
+echo "Version:  $DAI_VERSION" >> README
+echo "Date:     $DAI_DATE" >> README
+echo "See also: http://www.libdai.org" >> README
+echo >> README
+w3m -dump doc/html/license.html | awk 'BEGIN {start=0}; $1 ~ /━/ {start=start+1; if (start<2) print $0}; $1 !~ /━/ {if (start>0 && start<2) print $0}' >> README
+echo >> README
+w3m -dump doc/html/citations.html | awk 'BEGIN {start=0}; $1 ~ /━/ {start=start+1; if (start<2) print $0}; $1 !~ /━/ {if (start>0 && start<2) print $0}' >> README
+w3m -dump doc/html/index.html | awk 'BEGIN {start=0}; $1 ~ /━/ {start=start+1; if (start<2) print $0}; $1 !~ /━/ {if (start>0 && start<2) print $0}' >> README
+w3m -dump doc/html/build.html | awk 'BEGIN {start=0}; $1 ~ /━/ {start=start+1; if (start>0 && start<5) print $0}; $1 !~ /━/ {if (start>0 && start<5) print $0}' >> README
+sed -i 's/━/-/g' README
+sed -i 's/•/*/g' README

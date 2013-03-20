@@ -1,0 +1,18 @@
+libDAI was written by Joris M. Mooij with the help of the following people:
+
+Martijn Leisink (laid down the foundations for the library),
+Frederik Eaton (contributed the Gibbs sampler, conditioned BP, fractional BP and various other improvements),
+Charles Vaske (contributed the parameter learning algorithms),
+Giuseppe Passino (contributed the findMaximum function, and various other improvements),
+Bastian Wemmenhove (contributed the MR algorithm),
+Patrick Pletscher (contributed the SWIG interface).
+
+Smaller contributions (bug fixes and miscellaneous smaller patches) have been made by:
+Claudio Lima, Christian Wojek, Sebastian Nowozin, Stefano Pellegrini, Ofer Meshi,
+Dan Preston, Peter Gober, Jiuxiang Hu, Peter Rockett, Dhruv Batra, Alexander Schwing, 
+Alejandro Lage, Matt Dunham, Laurens van der Maaten, Jerome Maye, Priya, Hynek Urban,
+Avneesh Saluja, Thomas Mensink.
+
+Part of this work was part of the Interactive Collaborative Information Systems (ICIS) 
+project, supported by the Dutch Ministry of Economic Affairs, grant BSIK03024. The
+Radboud University Nijmegen, The Netherlands, is one of the copyright holders.

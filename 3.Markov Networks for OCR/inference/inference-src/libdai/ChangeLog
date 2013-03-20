@@ -1,0 +1,1006 @@
+git master
+----------
+* Fixed bug (found by cax): when building MatLab MEX files, GMP libraries were not linked
+* [Arman Aksoy] Added Makefile.MACOSX64
+* Fixed bug in findMaximum (it only considered a single connected component of the factor graph)
+* [Benjamin Piwowarski] Renamed "foreach" macro into "bforeach" to avoid conflicts with newer Boost library versions
+* Optimized ClusterGraph( const FactorGraph&, bool) constructor
+* Fixed "typename" bug in src/alldai.cpp which resulted in FTBFS for older g++ compilers
+* Fixed memory leak in alldai.cpp and removed the function builtinInfAlgs()
+* Fixed memory leak in CBP::run()
+* Fixed typo in Priya's name
+
+
+libDAI-0.3.0 (2011-07-12)
+-------------------------
+
+New license:
+* Changed license from GPL v2+ to FreeBSD (BSD 2-clause)
+
+Miscellaneous improvements:
+* Improved Exception class 
+  (it now stores more information and doesn't print to stderr by default)
+* Added builtinInfAlgs() and builtinInfAlgNames()
+
+Bug fixes:
+* [Laurens van der Maaten] src/matlab/dai.cpp now correctly handles missing logZ() 
+  and maxDiff() implementations
+* Now uses GMP big integer type to represent linear states and the number of
+  states of VarSets (in some cases). This fixes a bug Jerome Maye and Priya 
+  found in the State class. Unfortunately, the supplied Makefile.WINDOWS now 
+  no longer works out-of-the-box.
+* Fixed numerical issues in MF, FBP and TRWBP (discovered in sparse branch)
+* Fixed bug in findMaximum(): inconsistent max-beliefs are now detected,
+  instead of returning a MAP state with zero joint probability
+  (reported by Hynek Urban)
+* Fixed a Boost-related bug in src/util.cpp (reported by Avneesh Saluja)
+  (the random seed needs to be an unsigned int on some platforms)
+* Fixed two bugs in examples/example_sprinkler_gibbs (reported by Priya)
+* Fixed bug in tokenizeString() and Evidence::addEvidenceTabFile()
+  (a tab character at the end of a line was incorrectly discarded - bug reported by Priya)
+* Replaced all Name members by name() virtual functions and removed global variable DAINames
+  (this fixes a bug in matlab/dai.cpp reported by Thomas Mensink)
+
+
+libDAI-0.2.7 (2010-08-19)
+-------------------------
+
+* Removed interfaces deprecated in 0.2.6.
+* Fixed a bug in JTree::findMaximum() (reported by zhengyun84 and Dhruv Batra):
+  if one or more variables had a MAP belief with more than one maximum, an 
+  incorrect MAP state could result.
+
+
+libDAI-0.2.6 (2010-08-05)
+-------------------------
+
+New features:
+* Added decimation algorithm DecMAP for MAP inference (decmap.h/cpp).
+* Added source code for one of the winning solvers of the 
+  UAI 2010 Approximate Inference Challenge (examples/uai2010-aie-solver.cpp).
+* Added support for reading files in the UAI Approximate Inference Challenge
+  format, supporting both the 2006/2008 evidence file format and the 2010
+  evidence file format (io.h/cpp).
+
+Miscellaneous improvements:
+* 'maxtime' property added to various algorithms (BP, Gibbs, HAK, TreeEP)
+  for setting an upper limit on execution time.
+* 'maxmem' property added to JTree for setting an upper limit on memory usage.
+* SmallSet:
+  - Added SmallSet::erase( const T& t ).
+* VarSet:
+  - nrStates() now returns a long double instead of a size_t.
+* Permute:
+  - Added ranges() accessor.
+  - Added inverse() method.
+  - Added optional reverse argument to Permute( const std::vector<Var>& ) constructor.
+* Factor:
+  - Added createFactorDelta( const VarSet& vs, size_t state ).
+* ClusterGraph:
+  - Added ClusterGraph(const FactorGraph& fg, bool onlyMaximal) constructor.
+  - Added findCluster( const VarSet& cl ).
+  - Added elimVar( size_t i ).
+  - Added 'maxStates' argument to VarElim( EliminationChoice f, size_t maxStates=0 ).
+* FactorGraph:
+  - Added isMaximal(size_t).
+  - Added maximalFactor(size_t).
+  - Added FactorGraph::logScore( const std::vector<size_t>& statevec ).
+* Gibbs:
+  - Added 'restart' property.
+  - Added Gibbs::findMaximum() for MAP inference.
+* HAK:
+  - Optimized region graph construction for HAK/GBP with clusters=BETHE.
+* examples/examples_imagesegmentation.cpp:
+  - [Peter Rockett] Improved Makefiles for image segmentation example.
+  - Added build flag to specify the CImg version.
+* util.h/cpp:
+  - Added fromString<>( const std::string& x ).
+
+Interface changes (the old interface is marked obsolete and will be removed in the next release):
+* Added InfAlg::setMaxIter(size_t) for setting the maximum number of iterations.
+* Deprecated Graph::Neighbor, BipartiteGraph::Neighbor and DAG::Neighbor
+  and replaced them by a globally defined Neighbor structure
+* Deprecated Graph::Neighbors, BipartiteGraph::Neighbors and DAG::Neighbors
+  and replaced them by a globally defined Neighbors type
+* Deprecated Graph::Edge, BipartiteGraph::Edge and DAG::Edge
+  and replaced them by a globally defined Edge type
+* Renamed 'iters' property of Gibbs algorithm into 'maxiter'.
+* ClusterGraph::findVar( const Var& n ) no longer throws an exception if the
+  variable is not found.
+* Deprecated 'void tokenizeString( const string&, vector<string>&, const string& )'
+  and replaced it with an improved version
+  'vector<string> tokenizeString( const string&, bool, const string& )'
+* Removed interfaces deprecated in 0.2.5.
+
+Bug fixes:
+* Fixed a problem with isnan() on FreeBSD; it is now in the dai namespace.
+* Workaround for older g++ compilers (e.g. version 4.0.0 on Darwin 9.8.0)
+  which have problems when comparing const_reverse_iterator with
+  reverse_iterator.
+* [Matt Dunham] Fixed a bug in Factors2mx in src/matlab/matlab.cpp
+  (segfault if factors depending on 0 variables were passed to MatLab)
+
+
+libDAI-0.2.5 (2010-05-09)
+-------------------------
+
+New features:
+* Added unit tests for var, smallset, varset, graph, dag, bipgraph,
+  weightedgraph, enum, util, exceptions, properties, index, prob, 
+  factor, factorgraph, clustergraph, regiongraph, daialg, alldai
+* [Ofer Meshi] Added a script for converting from FastInf to libDAI format
+* Added utils/uai2fg, a utility to convert the UAI inference competition file
+  formats to the libDAI factor graph file format
+* Added dag.h/cpp, an implementation of Directed Acyclic Graphs
+* Added examples/example_imagesegmentation
+
+Miscellaneous improvements:
+* TRWBP:
+  - Added initialization of TRWBP weights by sampling spanning trees
+* MF:
+  - Added an "init" option that allows to initialize randomly
+  - Added an "updates" option that allows to choose between standard
+    mean field and "hard-spin" mean field
+* MR:
+  - rewrote response propagation implementation with help of BBP
+  - now uses GraphAL to represent the Markov graph
+  - miscellaneous smaller cleanups
+* TreeEP:
+  - Now also supports disconnected factor graphs
+* JTree:
+  - Now also supports disconnected factor graphs
+* ExactInf:
+  - Added findMaximum()
+* RegionGraph:
+  - Added error checking code
+  - Changed the way a RegionGraph is streamed to an std::ostream.
+* ClusterGraph:
+  - Added nrVars() method
+  - Added var( size_t ) method
+  - Added cluster( size_t ) method
+* FactorGraph:
+  - clamped() now contains a delta factor for the clamped variable
+  - Added MarkovGraph()
+* TFactor:
+  - Added takeAbs()
+  - Added takeExp()
+  - Added takeLog( bool )
+  - Added operator-() const
+  - Added sumAbs() const
+  - Added operator==( const TFactor<T> &y )
+  - Added get(size_t), set(size_t,T)
+* TProb:
+  - Added operator==( const TProb<T> &q )
+  - accumulate() now also applies op2 to init
+  - operator/= (T x) now yields 0 when dividing by 0
+  - Added resize(size_t)
+  - Added get(size_t) and set(size_t,T) 
+  - Changed format of TProb<T> when streamed to an ostream
+* multifor:
+  - Added reset()
+* PropertySet:
+  - Added size()
+  - Added clear()
+  - Added erase()
+* util.h/cpp:
+  - Added std::string toString( const T& x )
+* weightedgraph.h/cpp:
+  - Added option to MaxSpanningTree and MinSpanningTree for
+    choosing between Prim's algorithm and Kruskal's algorithm
+  - Better error checking in RootedTree constructor
+  - Added GraphEL::GraphEL( const GraphAL& G ) constructor
+* BipartiteGraph:
+  - Added hasEdge()
+  - Added findNb1()
+  - Added findNb2()
+  - Added nb1Set()
+  - Added nb2Set()
+  - Added operator==( const BipartiteGraph& )
+  - Added BipartiteGraph( size_t nr1, size_t nr2 ) constructor
+  - Added operator<<( std::ostream&, const BipartiteGraph& )
+* GraphAL:
+  - Added hasEdge(size_t,size_t)
+  - Added nbSet(size_t)
+  - Added operator==( const GraphAL& )
+  - Added operator<<( std::ostream&, const GraphAL& )
+* SmallSet:
+  - Added insert( const T& t ) method
+* Improved regression test
+* Made all "verbose" properties optional
+* utils/createfg now has a new factor type ('ISINGUNIFORM') and the old
+  'ISING' factor type has been renamed to 'ISINGGAUSS'
+* tests/testdai option "marginals" now has five possible values: NONE
+  outputs no marginals, VAR only variable marginals, FAC only factor
+  marginals, VARFAC both types of marginals, and ALL outputs all
+  marginals calculated by the algorithm.
+* Compressed Makefile
+
+Interface changes (the old interface is marked obsolete and will be removed in the next release):
+* Removed RandomDRegularGraph(), please use createGraphRegular() instead
+* TreeEP:
+  - Changed construct( const RootedTree& ) into
+    construct( const FactorGraph&, const RootedTree& )
+* JTree:
+  - Changed construct( const std::vector<VarSet>&, bool ) into
+    construct( const FactorGraph&, const std::vector<VarSet>&, bool )
+  - Changed GenerateJT( const std::vector<VarSet> & )
+    into GenerateJT( const FactorGraph &, const std::vector<VarSet> & )
+* RegionGraph: 
+  - Made (previously public) members G, ORs, IRs and fac2OR protected and
+    added DAG() accessor which returns a reference to the region graph DAG 
+    structure (currently implemented as a BipartiteGraph).
+  - Renamed calcCountingNumbers() into calcCVMCountingNumbers() and made it 
+    protected, because exposing it to the world serves no purpose.
+  - Removed partial constructor RegionGraph( const FactorGraph& fg )
+  - Made RecomputeORs(), RecomputeORs( const VarSet& ) and RecomputeOR( size_t ) 
+    protected and renamed them by changing the "Recompute" into "recompute", 
+    because exposing them to the world serves no purpose.
+* ClusterGraph:
+  - Made (previously public) members G, vars and clusters private and added 
+    bipGraph(), vars() and clusters() methods which offer read-only access 
+    to these members.
+  - Deprecated toVector()
+  - Renamed size() into nrClusters()
+* FactorGraph:
+  - Renamed Cliques() into maximalFactorDomains() and made it faster
+  - findVars( const VarSet& ) now returns a SmallSet<size_t>
+    and its argument now has a const-qualifier (which fixes a small bug).
+  - Made (previously public) member G private and added the 
+    bipGraph() method, which offers read-only access to it.
+  - Deprecated the iterator interface:
+    o FactorGraph::iterator typedef
+    o FactorGraph::const_iterator typedef
+    o FactorGraph::begin() members
+    o FactorGraph::end() members
+  - Deprecated factor(size_t) which offered write access to a factor
+    because using this functionality in the descendant RegionGraph is dangerous,
+    as the outer regions are not automatically recomputed.
+* TFactor:
+  - Renamed states() into nrStates()
+  - Added get(size_t) and set(size_t,T) operators; 
+    get() is equivalent to "operator[](size_t) const" and set() should
+    be used instead of the non-const operator[], which has been deprecated
+* TProb:
+  - Deprecated TProb( TIterator begin, TIterator end, size_t sizeHint=0 )
+    constructor: the sizeHint argument no longer defaults to 0
+  - Deprecated accumulate( T init, binOp op1, unOp op2 );
+    instead, accumulateSum( T init, unOp op ) and
+    accumulateMax( T init, unOp op, bool minimize ) should be used.
+  - Deprecated TProb::NormType and TProb::DistType;
+    ProbNormType and ProbDistType should be used instead.
+  - Fixed bug by renaming operator<=() to operator<()
+  - Added get(size_t) and set(size_t,T) operators; 
+    get() is equivalent to "operator[](size_t) const" and set() should
+    be used instead of the non-const operator[], which has been deprecated
+* PropertySet:
+  - Renamed Set() -> set()
+  - Renamed Get() -> get()
+  - Renamed GetAs<T>() -> getAs<T>()
+  - Renamed ConvertTo<T>() -> convertTo<T>()
+* util.h/cpp:
+  - Removed max( const std::vector<Real> &v )
+* weightedgraph.h/cpp:
+  - Renamed MaxSpanningTreePrims into MaxSpanningTree
+  - Renamed MinSpanningTreePrims into MinSpanningTree
+  - The vertices in DEdge and UEdge are now named "first" and "second"
+    for compatibility with a std::pair<size_t,size_t>
+* BipartiteGraph:
+  - delta1() and delta2() now return a SmallSet<size_t> instead of a vector<size_t>
+* SmallSet:
+  - The sizeHint argument of the iterator constructor
+     SmallSet::SmallSet( TIterator begin, TIterator end, size_t sizeHint=0 )
+    no longer has a default value in order to avoid confusion with the
+     SmallSet::SmallSet( const T &t1, const T &t2 )
+    constructor.
+
+Bug fixes:
+* [Stefano Pellegrini] Fixed bug in JTree::findMaximum()
+* [Stefano Pellegrini] Fixed bug in BP[logdomain=1,inference=MAXPROD]
+* Fixed some bugs in the MatLab interface build system
+* Fixed a bug in utils/fginfo.cpp
+* Fixed a bug in JTree::findMaximum() and simplified the code
+* Fixed bug in BBPCostFunction::operator=() which prevented the desired 
+  assignment from happening
+* RegionGraph::WriteToFile( const char* ), RegionGraph::ReadFromFile( const char * )
+  and RegionGraph::printDot( std::ostream& ) incorrectly called their respective
+  FactorGraph ancestor methods; this has been corrected by letting them throw a
+  NOT_IMPLEMENTED exception.
+* Fixed bug in FactorGraph::clone()
+* Fixed bug in min( const TFactor<T> &, const TFactor<T> & )
+* Fixed bug in max( const TFactor<T> &, const TFactor<T> & )
+* Fixed bug by renaming TProb<T>::operator<=() to TProb<T>::operator<()
+* Fixed bug in PropertySet::setAsString<T>()
+* Fixed a bug in rnd_seed()
+* BipartiteGraph:
+  - Fixed bug in eraseNode1()
+  - Fixed bug in eraseNode2()
+  - Fixed bug in isTree()
+* GraphAL:
+  - Fixed bug in nrEdges()
+  - Fixed bug in addEdge()
+  - Fixed bug in isTree()
+  - Fixed bug in eraseNode()
+  - Fixed bug in printDot()
+* Fixed bug in createGraphGrid3D()
+* Fixed bug in createGraphRegular()
+
+
+libDAI-0.2.4 (2010-02-11)
+-------------------------
+
+New features:
+* Implemented Tree-Reweighted BP
+* [Frederik Eaton] Implemented Fractional Belief Propagation
+
+Miscellaneous improvements:
+* Improved documentation
+* [Frederik Eaton] Added constructors for BBPCostFunction
+* [Frederik Eaton] Added accessor/mutator for the elements of a SmallSet<>
+* [Frederik Eaton] Added unary minus to TProb<>
+* [Frederik Eaton] Added Hellinger distance to TProb<>::DistType
+* [Frederik Eaton] Two small patches for src/jtree.cpp and utils/createfg.cpp
+* tests/testdai option "marginals" now has three possible values: NONE
+  outputs no marginals, VAR only variable marginals, and ALL outputs all
+  marginals calculated by the algorithm.
+* Strengthened convergence criteria of various algorithms
+* Added GraphAL, an adjacency list implementation for graphs,
+  similar to (but simpler than) BipartiteGraph
+* Added some functionality to create various standard factors
+  (the functions whose names start with "createFactor")
+* Added examples example_sprinkler_gibbs and example_sprinkler_em
+* Implemented various heuristics for choosing a variable elimination sequence 
+  in JTree
+* Added BETHE method for GBP/HAK cluster choice
+* Made alias support official part of the library
+
+Build system:
+* Moved platform independent build options into Makefile.ALL
+* Windows platform now needs Boost 1.37 or higher
+
+Code cleanup:
+* Cleaned up utils/createfg and tests/testdai
+* Cleanup of some duplicate code in BP, FBP, TRWBP
+
+Interface changes (the old interface is marked obsolete and will be removed in the next release):
+* Removed obsolete/deprecated stuff
+* Renamed Graph into GraphEL (for Graph, implemented as Edge List)
+* Renamed some functions of BipartiteGraph:
+    add1() -> addNode1()
+    erase1() -> eraseNode1()
+    nr1() -> nrNodes1()
+    add2() -> addNode2()
+    erase2() -> eraseNode2()
+    nr2() -> nrNodes2()
+* Renamed some functions in ClusterGraph:
+    ClusterGraph::eliminationCost() -> ::eliminationCost_MinFill() 
+    ClusterGraph::VarElim() -> ClusterGraph::VarElim( sequentialVariableElimination( ElimSeq ) ) 
+    ClusterGraph::VarElim_MinFill() -> ClusterGraph::VarElim( greedyVariableElimination( eliminationCost_MinFill ) )
+* Changed interface of one RegionGraph constructor
+* Renamed "Clamped BP" into "Conditioned BP"
+
+Bug fixes:
+* Fixed regression in scripts/regenerate-properties (now all errors are 
+  gathered before throwing the exception, as used to be the case)
+* Fixed FTBFS errors on MACOSX (thanks to Sebastian Riedel for reporting this bug)
+* [Alexander Schwing] Fixed error in BP that occured with damping
+  and using log-domain updates
+* Fixed bug in HAK for trivial region graphs (with only one outer region
+  and no inner regions), reported by Alejandro Lage.
+* Fixed long-standing bug in TreeEP (now, within-loop propagation optimization works)
+
+
+libDAI-0.2.3 (2009-11-16)
+-------------------------
+
+New features:
+* Complete doxygen documentation (although more detailed documentation still
+  has to be written)
+* [Charles Vaske] Added parameter learning for conditional probabilities by 
+  Expectation Maximization
+* [Patrick Pletscher] Added SWIG wrapper code for experimental python and 
+  octave interfaces
+* Added Max-Product functionality to JTree
+* [Frederik Eaton] Added Back-Belief-Propagation
+* [Frederik Eaton] Added approximate inference method "Clamped Belief Propagation"
+* [Frederik Eaton] Added approximate inference method "Gibbs sampling"
+
+Code cleanup:
+* Updated copyright headers
+* Cleaned up error handling by introducing the DAI_THROWE macro
+* Introduced DAI_DEBASSERT macro to abbreviate a common pattern
+* Replaced the standard assert() macro by DAI_ASSERT, which throws a
+  dai::Exception and is even active if NDEBUG is defined
+* Removed all the virtual default constructors *::create(), as they are not used
+* [Frederik Eaton] Removed unnecessary copy constructors and assignment operators
+* [Frederik Eaton] Change cout to cerr in warnings and error messages
+
+Miscellaneous improvements:
+* BipartiteGraph:
+  - Added eraseEdge( size_t n1, size_t n2 )
+  - [Frederik Eaton] Improved documentation of Neighbor
+* TProb<T>:
+  - Added divided_by(const TProb<T>&) const
+  - Added constructor TProb<T>( const std::vector<S> &v )
+  - Added size_t draw(), which draws a random index
+  - [Frederik Eaton] Added setUniform()
+  - [Frederik Eaton] Added sumAbs()
+  - [Frederik Eaton] Added argmax()
+  - [Giuseppe Passino] Added begin(), end()
+* TFactor<T>:
+  - [Giuseppe Passino] Added begin(), end()
+  - [Charles Vaske] Added TFactor( const std::vector<Var> &vars, const std::vector<T> &p ),
+    which reorders variables to canonical ordering before storing the table
+  - Added constructor TFactor<T>( const VarSet &vars, const std::vector<S> &v )
+  - Extended functionality of TFactor<T>::operators +,-,+=,-= to handle different VarSets
+  - Added TFactor<T>::maxMarginal (similar to marginal but with max instead of sum)
+* State:
+  - [Giuseppe Passino] Added prefix ++ operator
+* Permute:
+  - [Charles Vaske] Added constructor in Permute for canonical variable ordering
+* FactorGraph:
+  - [Frederik Eaton] Added clampVar()
+  - [Frederik Eaton] Added clampFactor()
+  - [Giuseppe Passino] Added begin(), end()
+* PropertySet:
+  - Added keys(), for getting all keys
+  - [Frederik Eaton] Added default constructor
+  - [Frederik Eaton] Added constructor from string
+* InfAlg:
+  - Added setProperties(), getProperties() and printProperties()
+  - [Frederik Eaton] Added beliefV(), beliefF()
+* ExactInf:
+  - Added calcMarginal(const VarSet &)
+* HAK:
+  - Added "init" parameter to allow for random initialization
+* BP:
+  - [Giuseppe Passino] Added findMaximum(), which can be used after running
+    max-product BP to construct a global state with maximum probability
+* JTree:
+  - Added findMaximum(), which can be used after running
+    max-product JTree to construct a global state with maximum probability
+* MatLab interface:
+  - MEX file dai now also returns variable and factor beliefs
+  - [Sebastian Nowozin] MEX file dai now also optionally returns the MAP state
+    (only for BP and JTree)
+* README is now created automatically from doxygen documentation
+* [Frederik Eaton] Added script for automatically generating properties code (used by CBP and BBP)
+* [Frederik Eaton] Added newInfAlgFromString to alldai.h/cpp
+* [Frederik Eaton] Added some utility macros (DAI_PV, DAI_DMSG, DAI_IFVERB)
+  and functions (concat(),rnd()) to util.h
+* Changed output stream operator<< for Var and VarSet
+* [Frederik Eaton] Improved parsing code in tests/testdai to allow recursive
+  alias substitutions
+* [Frederik Eaton] Added useful aliases to aliases.conf
+* [Giuseppe Passino] Optimised maximum-residual BP by using a reversed ordered
+  set instead of the linear search (which can yield enormous speedups - a
+  factor 500 has been measured on a binary Ising grid with 128x128 variables!)
+* Added debug assertions to Var which check for inconsistent dimensions of
+  variables with the same labels
+* toc() now returns POSIX system time with maximum accuracy of microseconds
+* Exception objects now remember their error code
+* Examples:
+  - Moved example.cpp to examples/
+  - Added examples/example_bipgraph.cpp
+  - Added examples/example_varset.cpp
+  - Added examples/example_sprinkler.cpp
+  - Added examples/example_permute.cpp
+  - Added python and octave ports for examples/example_sprinkler.cpp
+
+Build system:
+* Improved Makefile:
+  - Merged Makefile.win and Makefile.shared into Makefile
+  - Macros DAI_VERSION and DAI_DATE have been introduced,
+    in order to store this information in a central place
+  - Introduced CCNODEBUGFLAGS in Makefile
+  - Switched Makefile.win to GNU Make syntax
+  - [Frederik Eaton] Added TAGS, lib targets to Makefile
+* Compatibility:
+  - [Peter Gober] libDAI can now be built on Cygwin
+  - [Dan Preston] libDAI can now be built on Mac OS X
+  - Changed regression test so that it also works under Windows
+
+Interface changes (the old interface is marked obsolete and will be removed in the next release):
+* Var:
+  - Variable labels are now nonnegative (of type size_t)
+* VarSet:
+  - Replaced calcState() by non-member calcLinearState()
+  - Replaced calcStates() by non-member calcState()
+* Permute:
+  - Renamed convert_linear_index into convertLinearIndex
+* TProb<>:
+  - Replaced log0() by log(true)
+  - Replaced takeLog0() by takeLog(true)
+  - Removed hasNonPositives()
+  - Renamed minVal() to min()
+  - Renamed maxVal() to max()
+  - Renamed totalSum() to sum()
+* TFactor<>:
+  - Replaced log0() by TFactor<T>::log(true)
+  - Removed divided_by, use operator/ instead
+  - Removed divide, use operator/= instead
+  - Removed partSum(const VarSet&), use marginal(const VarSet&,false) instead
+  - Renamed minVal() to min()
+  - Renamed maxVal() to max()
+  - Renamed totalSum() to sum()
+* FactorGraph:
+  - Changed clamp and clamp interfaces (the variable to be
+    clamped is now indicated by its index, not as a Var)
+* RegionGraph:
+  - Renamed Check_Counting_Numbers into checkCountingNumbers
+  - Renamed Calc_Counting_Numbers into calcCountingNumbers
+* Miscellaneous:
+  - Renamed Treewidth(const FactorGraph &) into boundTreewidth(const FactorGraph &)
+  - Replaced UEdgeVec by Graph
+  - Replaced DEdgeVec by new RootedTree class
+  - Moved functionality of GrowRootedTree() into constructor of RootedTree
+  - Merged calcPairBeliefsNew() into calcPairBeliefs()
+  - Removed calcMarginal2ndO()
+  - Renamed smallSet<T> to SmallSet<T>
+  - Removed class Diffs
+  - [Frederik Eaton] Added backwards compatibility layer for edge interface to
+    BipartiteGraph and FactorGraph (which will be obsoleted soon)
+
+Bug fixes:
+* Fixed reversal of min and max in 
+  TFactor<T> min( const TFactor<T> &, const TFactor<T> & )
+  TFactor<T> max( const TFactor<T> &, const TFactor<T> & )
+* [Sebastian Nowozin] Fixed memory leak in MEX file dai
+* [Frederik Eaton] In PropertySet::getStringAs(), check for typeid(ValueType) 
+  before typeid(std::string) (this fixes a strange bug for empty string property)
+* Added work-around for bug in Boost Graph Library
+* Fixed bug in MaxSpanningTree (it wrongly assumed that the tree was not empty).
+* Fixed bug in calcMarginal and calcPairBeliefs where states with zero probability 
+  mass were clamped, leading to NaNs or assertion errors (thanks to Dan Preston 
+  for reporting this)
+
+
+libDAI-0.2.2 (2008-09-30)
+-------------------------
+
+New features:
+* Approximate inference methods now report the number of iterations needed.
+* Added damping to various algorithms to improve convergence properties.
+* Added more features to utils/createfg for creating factor graphs.
+* Added ExactInf class for brute force exact inference.
+* [Giuseppe Pasino] Added "logdomain" property to BP, a boolean that controls
+  whether calculations are done in the log-domain or in the linear domain;
+  doing calculations in the log-domain may help if the numerical range
+  of a double is too small.
+* [Claudio Lima] Added Max-Product functionality to BP.
+* Improved documentation.
+
+Improved architecture:
+* Added Exceptions framework.
+* Pervasive change of BipartiteGraph implementation (based on an idea by
+  Giuseppe Passino). BipartiteGraph no longer stores the node properties
+  (former _V1 and _V2), nor does it store a dense adjacency matrix anymore,
+  nor an edge list. Instead, it stores the graph structure as lists of
+  neighboring nodes. This yields a significant memory/speed improvement for
+  large factor graphs, and is more elegant as well. Iterating over neighbors is
+  made easy by using boost::foreach.
+* Added conditional compilation of inference methods.
+* VarSet is now implemented using a std::vector<Var> instead of a
+  std::set<Var>, which yields a significant speed improvement. Furthermore,
+  the implementation has been generalized, resulting in the small_set<T> class
+  which can be used to represent sets of small cardinality; VarSet is the
+  specialization with T = Var.
+* Improved ClusterGraph implementation, yielding significant speedups
+  for the JunctionTree algorithm on large factorgraphs.
+
+Code cleanup:
+* Moved everything into namespace "dai".
+* Renamed DEBUG to DAI_DEBUG to avoid conflicts.
+* Replaced ENUM2,ENUM3,ENUM4,ENUM5,ENUM6 by single DAI_ENUM macro.
+* Removed utils/remove_short_loops and matlab/remove_short_loops.
+* Replaced sub_nb class in mr.h by boost::dynamic_bitset.
+* Improved index.h:
+  - Renamed Index -> IndexFor
+  - Added some .reserve()'s to IndexFor methods which yields a
+    25% speedup of testregression
+  - Replaced multind by Permute
+  - Added MultiFor
+  - Added State
+* New funcstionality of factor.h.
+* Moved Properties and MaxDiff frameworks from InfAlg to each individual
+  inference algorithm, because the Properties framework was not as
+  convenient as I hoped, and not every inference algorithm needs a maxdiff
+  variable. Also, replaced some FactorGraph functionality in InfAlg by a
+  function that returns the FactorGraph. The result is cleaner (less
+  entangled) code.
+* Removed x2x.
+* Replaced Complex with real numbers (negative potentials are just too rare
+  to warrant the additional "complexity" :)).
+
+Miscellaneous improvements:
+* Now compiles also with MS Visual C++ (thanks to Jiuxiang Hu) and with
+  GCC under Cygwin.
+* Contributions by Peter Gober:
+  - Renamed variable _N in mr.* for compatibility with g++ under Cygwin.
+* Misc contributions by Giuseppe Passino:
+  - removed "using namespace std;" from header files - bad practice;
+  - moved header files in include/dai and sources in src;
+  - changed #ifndefs to GNU style;
+  - added extra warning checks (-W -Wextra) and fixed resulting warnings;
+  - dai::TProb:
+    o removed copy constructor and assignment operators (redundant);
+    o implementation of some methods via STL algorithms;
+    o added methods takeExp, takeLog, takeLog0 for transformation in-place;
+    o explicit constructor (prevents implicit conversion from size_t to TProb);
+    o added operator+,+=,-,-=, with argument T (for calculations in log-scale);
+* Misc contributions by Christian Wojek:
+  - New FactorGraph constructor that constructs from given ranges of factors
+    and variables;
+  - Optimization of FactorGraph constructors using tr1::unordered_map.
+* FactorGraph constructors no longer check for short loops (huge speed
+  increase for large factor graphs), nor for negative entries. Also, the
+  normtype is now Prob::NORMPROB by default.
+* Improved MaxSpanningTreePrims algorithm (uses boost::graph).
+
+Interface changes:
+* VarSet::
+  - VarSet::stateSpace() -> nrStates(const VarSet &)
+  - VarSet( const std::set<Var> ) -> VarSet( begin, end, sizeHint=0 )
+  - VarSet( const std::vector<Var> ) -> VarSet( begin, end, sizeHint=0 )
+  - removed bool operator||
+  - operator&&(const VarSet&) -> intersects(const VarSet&)
+  - operator&&(const Var&) -> contains(const Var&)
+* FactorGraph::
+  - delta(const Var &) -> delta(size_t)
+  - Delta(const Var &) -> Delta(size_t)
+  - makeCavity(const Var &) -> makeCavity(size_t)
+  - vars() -> vars
+  - factors() -> factors
+  - removed MakeFactorCavity(size_t)
+  - removed ExactMarginal(const VarSet &)
+  - removed ExactlogZ()
+  - removed updatedFactor(size_t)
+  - removed _normtype and NormType()
+  - removed hasShortLoops(...) and removeShortLoops(...)
+  - WriteToDotFile(const char *filename) -> printDot( std::ostream& os )
+  - undoProb(size_t) -> restoreFactor(size_t)
+  - saveProb(size_t) -> backupFactor(size_t)
+  - undoProbs(const VarSet &) -> restoreFactors(const VarSet &)
+  - saveProbs(const VarSet &) -> backupFactors(const VarSet &)
+  - ReadFromFile(const char*) returns void (throws on error)
+  - WriteToFile(const char*) returns void (throws on error)
+  - removed hasNegatives()
+* RegionGraph::
+  - nr_ORs() -> nrORs()
+  - nr_IRs() -> nrIRs()
+  - ORs() -> ORs
+  - IRs() -> IRs
+* *::Regenerate() -> *::construct()
+* Renamed Index -> IndexFor
+* Diffs:
+  - max() -> maxDiff()
+  - max_size() -> maxSize()
+* Prob::max() -> Prob::maxVal()
+* Factor::
+  - max() -> maxVal()
+  - part_sum() -> partSum()
+* toc() in util.h now returns seconds as a double
+* VarSet::operator&&
+* Properties -> PropertySet
+
+
+libDAI-0.2.1 (2008-05-26)
+-------------------------
+
+Bugfix release.
+* added missing cstdio header in util.h
+* fixed Properties in MR_CLAMPING_* and MR_EXACT_*
+* added description of the factor graph fileformat
+* improved Makefile
+
+
+libDAI-0.2.0 (2006-11-30)
+-------------------------
+
+First public release.
+
+
+0.1.5 (2006-11-30)
+------------------
+
+Regressions
+
+- tests/testlcbp and tests/testlcbp are broken.
+- EXACT method does not work anymore.
+- The Properties framework gives a speed penalty because of the lookup
+  costs involved; inner loops should be optimized.
+
+General framework
+
+- DAIAlg is now a template class; typedefs for DAIAlg<FactorGraph> and for
+  DAIAlg<RegionGraph> are provided. In this way, we do not have to write "wrapper"
+  functions to forward functionality from either FactorGraph or RegionGraph
+  to DAIAlg. Functionality like clamping can be implemented in FactorGraph
+  and in RegionGraph and no explicit interface is needed in descendants.
+- New abstract base class InfAlg added, representing an inference algorithm,
+  from which DAIAlg<T> inherits. This solves the incompatibility problems of
+  DAIAlg<T> for different T (e.g. DAIAlg<FactorGraph> was incompatible with
+  DAIAlg<RegionGraph>). More work is required to reduce code duplication
+  (make FactorGraph part of InfAlg).
+- Added generic interface (nrVars(), Vars(), nrFactors(), factor(size_t),
+  beliefs(), belief(VarSet &), ...) to InfAlg and descendants.
+- Added a saveProbs/undoProbs interface to InfAlg and descendants that enables
+  one to save a few factors, modify them (e.g. clamp them), and then restore them
+  to their old values. Undo should also init the corresponding messages / beliefs.
+  This can be used if a given factor graph repeatedly needs to be clamped in
+  different ways and an approximation method is run for each clamping; using the
+  saveProbs/undoProbs can give a significant speed increase.
+- Switched to a general Properties framework that handles the parameters of
+  all inference methods in a uniform manner. The Properties class is a map of
+  several properties in boost::any objects, indexed by their names (strings).
+  It can read from a stream and write to a stream. It is recursive, in the sense
+  that a Properties object can hold a variable of type Properties as well.
+- Added a generic way of constructing inference algorithms from a factor graph,
+  name and properties object. Added the newInfAlg function which constructs
+  the requested object. This is used by LCBP, the Matlab interface and the
+  command line (test) interface.
+- Added a generic enum framework for enum parameters. Although implemented as a
+  hack, it is quite useful in that it drastically simplifies and reduces the
+  amount of code for handling enum parameters.
+- Provided generic functions for calculating marginals in different ways that
+  work for all approximate inference methods.
+
+Bugfixes
+
+- Fixed GBP free energy.
+- Fixed bug in junctiontree (it didn't init the _vars variable).
+- Corrected two bugs in operator&& and operator|| in VarSet (they returned
+  the logical NOT of what they should return).
+- Fixed bug in RegionGraph::RecomputeOR(s).
+- Fixed bug in utils/create_dreg_fg:
+  graph structure was not random for given parameters (forgot to call srand()).
+- TreeEP bug workaround: use the complete junction tree instead of a subtree.
+- Fixed bug in JTree::HUGIN() and JTree:ShaferShenoy() in case of junction tree
+  that consists of one outer region only.
+- Fixed INIT bug in LCBP2::UpdatePancake().
+- Fixed MaxDiffs flow (except for MR).
+
+New functionality
+
+- HAK supports several default cluster choices:
+  minimal (only factors)
+  delta   (Markov blankets)
+  loop    (all loops consisting of loops consisting of <loopdepth> or less variables)
+  Only the maximal clusters are used as outer clusters.
+- Implemented TreeEP. It generalizes the heuristic method described in the
+  Minka & Qi paper for obtaining a tree with the most relevant interactions to
+  higher order interactions. Almost all optimizations described in the Minka & Qi
+  paper are used, except that evidence is passed over the whole tree instead of
+  relevant subsets (the latter is almost implemented but buggy). Also added
+  alternative (worst-case) algorithm that uses a maximum spanning tree on the
+  weighted graph where the weight between neighbours i and j is given by
+  N(psi,i,j), where psi is the product of all the factors involving both i and j
+  (which is an upper bound on the effective interaction between i and j).
+- Implemented MR (MontanariRizzo) based on Bastian's code, but extended it
+  to be able to handle connectivities larger than 3 (in principle, up to 32).
+  It supports different initialization methods (the original RESPPROP,
+  the CLAMPING method and EXACT which uses JTree) and different update methods
+  (FULL and LINEAR).
+- Implemented LCBP2, an analogon of LCBP which represents pancakes as little
+  networks and uses some approximate inference method on them for calculating
+  marginals.
+- Now there are several LCBP variants (LCBP, LCBPI, LCBPJ, LCBPK, LCBPL);
+  LCBPJ works only for pairwise, LCBPK is LCBP improved for higher order
+  interactions and LCBPL is LCBPI improved for higher-order interactions.
+- Wrote one single program utils/createfg for creating various types of
+  random factor graphs.
+- Wrote utility to visualize factor graphs using graphviz.
+  (it uses the BOOST Program Options library)
+- Added fginfo utility that displays some info about a .fg file.
+- Implemented Factor::strength function that calculates the potential strength
+  N(psi,i,j) between variables i and j as described in cs.IT:0504030
+- Wrote a general MatLab interface matlab/dai (similar to tests/test);
+  this unified the matlab functions dai, dai_bp, dai_mf, dai_jt, dai_tep, dai_cvm.
+- Added MATLAB routine that returns contraction matrix A for BP convergence analysis.
+- Implemented a MATLAB interface ai_potstrength for Factor::strength
+- Added Martijn's x2x
+
+Improvements of existing code
+
+- Reimplemented RegionGraph and descendants: a RegionGraph ISA FactorGraph
+  and also a BipartiteGraph<FRegion,Region>. It now also keeps a map that
+  associates outer region indices to factor indices (no powers yet, this
+  is deemed superfluous) and provides functions to recompute (some of) the
+  outer regions from the factors.
+- InfAlg descendants run() methods now stop immediately and return NAN in case
+  they detect NANs. Only BP does not do NAN checking for performance reasons.
+- LCBP now works with factors containing zeroes (by defining x/0 = 0).
+- HAK, GBP and DoubleLoop now conform to the standards for verbose reporting,
+  timing and convergence criteria.
+- Implemented logZ() for JTree. It does the calculation during message-passing.
+- Marginal2ndO now optionally divides by the single node beliefs (to the power n-2);
+  hopefully this will give more accurate approximations.
+- Marginal and Marginal2ndO (optionally) use the new saveProbs/undoProbs functionality
+  for a faster way of calculating marginals, which does not require a call to init()
+  nor cloning the whole object for each clamping. This leads to a significant speedup.
+- LCBP (and LCBP2) now have complete flexibility in the specification of the
+  inner method, i.e. the method used to generate the initial cavity approximations.
+  One can pass two strings, a name and a properties string, and LCBP simply invokes
+  newInfAlg to construct the corresponding inference algorithm and uses the generic
+  marginal functions to approximate cavity marginals.
+- Replaced the global "method" variable by local properties and removed ai.h
+- Added some methods to Factor (operators *, *=, /, /= with doubles as
+  second argument, operators -, +=, -= with other Factors as second
+  arguments, randomize(), RemoveFirstOrderInteractions) and similar
+  operations to Prob
+- Moving towards boost::program_options for handling command line arguments
+  (tests/test is done).
+- Renamed some FactorGraph methods:
+  nr_vars       -> nrVars
+  nr_factors    -> nrFactors
+  varind        -> findVar
+  factorind     -> findFactor
+  makeFacCavity -> makeFactorCavity
+- LCBP_SEQMAXRES has been removed because it did strange things.
+- Implemented RandomDRegularGraph
+- Implemented JTree::calcMarginal for marginals that are not confined
+  within one cluster (using cut-set conditioning).
+- Added isConnected() method to FactorGraph (some methods do not work with
+  disconnected factor graphs).
+- Pair beliefs are now calculated in a symmetrical way by calcPairBeliefs
+- Removed single node interaction "correction" code from clamping methods
+- Removed calcCavityDist and calcCavityDist2ndO
+- No longer depends on GSL.
+- Increased portability by combining platform dependant utility functions
+  in util.{h,cpp}.
+- Wrote *.m files providing help
+
+Testing framework
+
+- Made a new and significantly improved testing framework that provides most
+  functionality from the command line.
+- The basis is provided by tests/test, which uses the newInfAlg functionality
+  and enables the user to easily compare from the command line different
+  inference methods on a given factorgraph. All parameters can be specified.
+  Output consists of CPU time, average and maximum single variable marginal
+  errors, relative logZ error and MaxDiff().
+- tests/aliases.conf contains aliases for standard combinations of methods
+  and their options (which can be used in tests/test).
+- tests/large contains several bash/python scripts that create random factor
+  graphs, compare several approximate inference algorithms (using tests/test) and
+  allow for easy visualization of the results using PyX.
+- Added several .fg files for test purposes to /tests (e.g. two ALARM versions
+  alarm.fg and alarm_bnt.fg; testfast.fg, a 4x4 periodic Ising grid for
+  regression testing).
+- Added a regression test to the Makefile which is included in the standard
+  target.  It compares all inference methods on tests/testfast.fg with the
+  results stored in tests/testfast.out
+
+Miscellaneous
+
+- Expanded all tabs to spaces (":set tabstop 4\n:set expandtab\n:retab" in vim)
+- Experimental MATLAB code added for StarEP approximation on cavity
+- Renamed project to libDAI and changed directory name accordingly.
+- Renamed JunctionTree to JTree.
+- Fixed licensing (now it's officially GPL).
+- Improved README
+
+
+revision 252
+------------
+
+Functionality
+- Added RegionGraph, GBP, CVM and HAK (double-loop).
+- Added JunctionTree (with two update algorithms, HUGIN and Shafer-Shenoy), which is a
+  RegionGraph.
+- NormType is now chosen automatically (in case of negative factors, Prob::NORMLINF is used,
+  otherwise the default Prob::NORMPROB is used). Also, in case of negative factors, the
+  RegionGraph constructors assign each Factor to a unique outer region instead of dividing
+  it over all subsuming outer regions. See README for when negative factors are known to work
+  and when not.
+- FactorGraph::FactorGraph(const vector<Factor>) only gives a warning in case of short loops,
+  it does not automatically merge factors anymore.
+- Removed BP_SEQMAXRESNOCLEAR (all cavity initialization methods now are implicitly NOCLEAR)
+- Added MATLAB interface functions ai_readfg, ai_removeshortloops and ai_bp
+- Added LCBP-III type that should be equivalent to LCBP-II, but can handle zeroes
+  in potentials. Note that it is significantly slower than LCBP-II (and has to be reimplemented
+  such that it does not store the complete pancakes, but represents them as little factor graphs).
+
+Implementation / code
+- Made a seperate type WeightedGraph, which until now only implements Prim's
+  maximal spanning tree algorithm and is only used by the junction tree code. It might
+  be good to make it a class somewhere in the future and extend it's interface.
+- Made a seperate class ClusterGraph, which is only used by the junction tree
+  code. It's main purpose is a graph-theoretical variable elimination algorithm.
+- Implemented the heuristic "minimum-new-edges-in-clique-graph" for variable elimination.
+- Massive code cleanup, moving towards "generic" programming style, using
+  multiple inheritance and polymorphism.
+  o BP, LCBP, MF, HAK and JunctionTree now inherit from a common DAIAlg class
+  o Made generic functions Marginal, Marginal2ndO, calcCavityDist, calcCavityDist2ndO, clamp
+    that can be used by FactorGraph-based DAIAlgs.
+  o Created TProb<T> class, which stores a probability vector (without the accompanying indexing
+    and VarSet) and provides functionality for it (which is used by TFactor<T>).
+  o Rewrote the VarSet class. It now caches its statespace(). It now privately inherits from set<Var>.
+    I had to overload the insert methods of set<Var> so that they calculate the new statespace.
+  o Rewrote the TFactor class. The TFactor class now HAS a TProb and HAS a VarSet.
+- Rewrote BP to use the new TProb<T> interface. Performance of BP improved up to a factor 6 by:
+  o using Prob's instead of Factor's;
+  o splitting the multiplication of the messages into two parts (thanks to Vicenc!);
+  o optimizing the calculation of the beliefs (only the message calculations were optimized till now).
+  o replacing FactorGraph::_nb1 and _nb2 (which were set<size_t>) by vector<size_t>
+- LCBP now seperately stores cavitydists and pancakes. Added InitPancakes() method
+  that takes the cavitydists and multiplies them with the relevant factors. This
+  resulted in an API change in AI which now accepts and returns initial cavitydists
+  instead of initial pancakes.
+
+Minor changes
+- Started writing DoxyGen documentation
+- Renamed lcptab2fg.m matlab/ai_writefg.m
+- Moved all matlab stuff to matlab/
+- More detailed reporting (also reports clocks used).
+- Marginal and Marginal2ndO now use *differences* in logZ to avoid NaNs.
+- Improved testing suite.
+- Removed logreal support.
+- FactorGraph now also supports input streams and ignores comment lines in .fg files.
+- Added tests/create_full_fg.cpp and tests/create_ising_fg.cpp which create
+  full and periodic 2D Ising networks according to some command line parameters.
+- Now logZ really returns logZ instead of -logZ.
+- Added FactorGraph::WriteToDotFile
+
+
+0.1.4 (2006-04-13)
+------------------
+- Added file IO routines to read and write factorgraphs.
+- Added L-infinity normalization for use with (partially) negative factors.
+- Renamed BetheF, MFF to logZ, which now use complex numbers to be able to
+handle (partially) negative factors.
+- Added test suite.
+- All probabilities are now represented using double instead of LogReal<double>.
+- Combined Alg and Alg3 into LCBP. Several update schemes possible.
+- Combined several variants of BP into doBP. Several update schemes possible.
+Now uses precalculated indices for optimization.
+- Renamed Node -> Var and Potential -> Factor.
+- Extensive code cleanup. More use of OO techniques. Changed API.
+- MaxIter now means maximum number of passes (corresponding to number of
+_parallel_ updates).
+- MaxDiff now means the maximum L-infinity distance between the updated and
+original single variable beliefs, for all AI methods.
+- Implemented RBP which converges faster than BP for difficult problems.
+- Now uses method parameter which is a bitmask combining outmethod and inmethod
+(see ai.h).
+
+
+0.1.3   (2006-03-22)
+--------------------
+- All AI methods now return maxdiff
+- ai.cpp:
+    o Now returns maxdiffinner and maxdiffouter
+    o New BP2ndO innermethod (estimate only 2nd order cavity interactions)
+    o New InitCav outermethod (only create initial cavity distributions)
+- bp.cpp:
+    o New CavityDist2ndO which estimates 2nd order cavity interactions
+- Makefile:
+    o Bugfix: removed dependencies on algwim.*
+
+
+0.1.2   (2006-02-28)
+--------------------
+- Cleaned up alg.cpp (removed Alg2 and its corresponding data structures).
+- Added the possibility to provide initial cavity distributions as an input
+argument to ai (not much error checking is done, so be careful).
+- Potentials2mx now correctly sets the dimensions of the P field (i.e. for
+the output arguments Q, Q0 of ai).
+- Removed algwim.* since it does not work.
+
+
+0.1.1   (2006-02-28)
+--------------------
+- The constructors of (Log)FactorGraph and LogFactorGraph from a
+vector<(Log)Potential> now merge potentials to prevent short loops (of length
+4) in the factor graph. These are used in ai to construct the factor graphs
+from the psi argument. If compiled with DEBUG defined, the method calc_nb()
+of BipGraph checks for the existence of short loops.
+- Changed calling syntax of ai (now the actual syntax *does* correspond to its
+description in the help).
+- ai does not hook cout anymore (which caused weird segfaults).
+- Fixed a bug in an assert statement in the matlab interface code in ai.cpp.
+- Removed network.* since it is not useful.
+
+
+0.1.0   (2006-02-28)
+--------------------
+First version worthy of a version number.

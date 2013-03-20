@@ -1,0 +1,2 @@
+#!/bin/bash
+./fg2dot $1 - | neato -T ps | gv -

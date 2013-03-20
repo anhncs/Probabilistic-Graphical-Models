@@ -1,0 +1,10 @@
+OBJS = \
+	backup.o 
+	getopt.o \
+	getopt1.o \
+	inp.o \
+	patch.o \
+	pch.o \
+	util.o \
+	version.o \
+	vndbj

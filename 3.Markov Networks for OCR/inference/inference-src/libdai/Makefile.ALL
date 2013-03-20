@@ -1,0 +1,44 @@
+# This file is part of libDAI - http://www.libdai.org/
+#
+# Copyright (c) 2006-2011, The libDAI authors. All rights reserved.
+#
+# Use of this source code is governed by a BSD-style license that can be found in the LICENSE file.
+
+
+# This file can be used to configure compile time options of libDAI.
+# Here the user can enable or disable various approximate inference 
+# methods and additional build targets (documentation, MatLab interface)
+# and specify whether to build with debug information included.
+#
+# It is platform independent and is included by Makefile.
+#
+# A boolean variable VAR can be set to true ("VAR=true") or to false ("VAR=")
+
+
+# COMPILATION AND BUILD FLAGS
+
+# Enable/disable various approximate inference methods
+WITH_BP=true
+WITH_FBP=true
+WITH_TRWBP=true
+WITH_MF=true
+WITH_HAK=true
+WITH_LC=true
+WITH_TREEEP=true
+WITH_JTREE=true
+WITH_MR=true
+WITH_GIBBS=true
+WITH_CBP=true
+WITH_DECMAP=true
+
+# Build with debug info? (slower but safer)
+DEBUG=true
+
+# Build doxygen documentation? (doxygen and TeX need to be installed)
+WITH_DOC=
+
+# Build MatLab interface? (MatLab needs to be installed)
+WITH_MATLAB=
+
+# Build image segmentation example? (CImg needs to be installed)
+WITH_CIMG=

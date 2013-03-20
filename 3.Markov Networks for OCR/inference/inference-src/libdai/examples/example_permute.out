@@ -1,0 +1,55 @@
+V = (x1, x2, x0)
+X = {x0, x1, x2}
+Note that the ordering of the variables in X is the canonical ordering
+(ascendingly according to their labels) but the ordering in V is different.
+
+The permutation between both variable orderings is sigma = (2, 0, 1), or more verbosely:
+  sigma[0] = 2
+  sigma[1] = 0
+  sigma[2] = 1
+This means that variable V[sigma[n]] should correspond with the n'th variable in X (for n=0,...,2)...OK. 
+
+The states of the variables x0,x1,x2 are, according to the ordering in V:
+SV:  x0:  x1:  x2:
+ 0    0    0    0
+ 1    0    1    0
+ 2    0    2    0
+ 3    0    0    1
+ 4    0    1    1
+ 5    0    2    1
+ 6    1    0    0
+ 7    1    1    0
+ 8    1    2    0
+ 9    1    0    1
+10    1    1    1
+11    1    2    1
+
+The states of the variables x0,x1,x2 are, according to the canonical ordering in X:
+SX:  x0:  x1:  x2:
+ 0    0    0    0
+ 1    1    0    0
+ 2    0    1    0
+ 3    1    1    0
+ 4    0    2    0
+ 5    1    2    0
+ 6    0    0    1
+ 7    1    0    1
+ 8    0    1    1
+ 9    1    1    1
+10    0    2    1
+11    1    2    1
+
+The permutation sigma induces the following permutation of linear indices of joint states:
+SV:  SX:
+ 0    0
+ 1    2
+ 2    4
+ 3    6
+ 4    8
+ 5   10
+ 6    1
+ 7    3
+ 8    5
+ 9    7
+10    9
+11   11

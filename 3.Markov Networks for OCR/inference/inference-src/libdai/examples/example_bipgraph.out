@@ -1,0 +1,13 @@
+G has 3 nodes of type 1, 2 nodes of type 2 and 5 edges.
+
+Node 0 of type 1 has 1 neighbors:
+  the 0'th neighbor is node 0 of type 2
+
+Node 1 of type 1 has 2 neighbors:
+  the 0'th neighbor is node 0 of type 2
+  the 1'th neighbor is node 1 of type 2
+
+Node 2 of type 1 has 2 neighbors:
+  the 0'th neighbor is node 0 of type 2
+  the 1'th neighbor is node 1 of type 2
+

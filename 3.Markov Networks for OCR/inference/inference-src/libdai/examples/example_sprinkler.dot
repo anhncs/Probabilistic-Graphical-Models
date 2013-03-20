@@ -1,0 +1,21 @@
+graph Sprinkler {
+  node[shape=circle];
+    C;
+    S;
+    R;
+    W;
+  node[shape=box];
+    f0 [label="P (C)"];
+    f1 [label="P (S|C)"];
+    f2 [label="P (R|C)"];
+    f3 [label="P (W|S,R)"];
+
+    f0 -- C;
+    f1 -- S;
+    f1 -- C;
+    f2 -- R;
+    f2 -- C;
+    f3 -- W;
+    f3 -- S;
+    f3 -- R;
+};

@@ -1,0 +1,11 @@
+#!/bin/bash
+TMPFILE1=`mktemp /var/tmp/testem.XXXXXX`
+trap 'rm -f $TMPFILE1' 0 1 15
+
+./testem 2var.fg 2var_data.tab 2var.em > $TMPFILE1
+./testem 3var.fg 2var_data.tab 3var.em >> $TMPFILE1
+./testem ../hoi1.fg hoi1_data.tab hoi1_share_f0_f2.em >> $TMPFILE1
+./testem ../hoi1.fg hoi1_data.tab hoi1_share_f0_f1_f2.em >> $TMPFILE1
+diff -s $TMPFILE1 testem.out || exit 1
+
+rm -f $TMPFILE1

@@ -1,0 +1,8 @@
+#!/bin/bash
+TMPFILE1=`mktemp /var/tmp/testfast.XXXXXX`
+trap 'rm -f $TMP_FILE' 0 1 15
+
+./testall testfast.fg > $TMPFILE1
+diff -s $TMPFILE1 testfast.out || exit 1
+
+rm -f $TMPFILE1

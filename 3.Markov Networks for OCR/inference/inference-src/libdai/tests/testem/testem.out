@@ -1,0 +1,182 @@
+Number of samples: 20
+Sample #0 has 2 observations.
+Sample #1 has 2 observations.
+Sample #2 has 2 observations.
+Sample #3 has 2 observations.
+Sample #4 has 2 observations.
+Sample #5 has 2 observations.
+Sample #6 has 2 observations.
+Sample #7 has 2 observations.
+Sample #8 has 2 observations.
+Sample #9 has 2 observations.
+Sample #10 has 2 observations.
+Sample #11 has 2 observations.
+Sample #12 has 2 observations.
+Sample #13 has 2 observations.
+Sample #14 has 2 observations.
+Sample #15 has 2 observations.
+Sample #16 has 2 observations.
+Sample #17 has 2 observations.
+Sample #18 has 2 observations.
+Sample #19 has 2 observations.
+Iteration 1 likelihood: -27.7259
+Iteration 2 likelihood: -23.4297
+Iteration 3 likelihood: -23.4297
+
+Inferred Factor Graph:
+######################
+1
+
+2
+0 1 
+2 2 
+4
+0   0.166666666667
+1   0.666666666667
+2   0.833333333333
+3   0.333333333333
+Number of samples: 20
+Sample #0 has 2 observations.
+Sample #1 has 2 observations.
+Sample #2 has 2 observations.
+Sample #3 has 2 observations.
+Sample #4 has 2 observations.
+Sample #5 has 2 observations.
+Sample #6 has 2 observations.
+Sample #7 has 2 observations.
+Sample #8 has 2 observations.
+Sample #9 has 2 observations.
+Sample #10 has 2 observations.
+Sample #11 has 2 observations.
+Sample #12 has 2 observations.
+Sample #13 has 2 observations.
+Sample #14 has 2 observations.
+Sample #15 has 2 observations.
+Sample #16 has 2 observations.
+Sample #17 has 2 observations.
+Sample #18 has 2 observations.
+Sample #19 has 2 observations.
+Iteration 1 likelihood: -27.7259
+Iteration 2 likelihood: -23.7555
+Iteration 3 likelihood: -23.7555
+
+Inferred Factor Graph:
+######################
+1
+
+3
+0 1 2 
+2 2 2 
+8
+0   0.214285714286
+1   0.642857142857
+2   0.785714285714
+3   0.357142857143
+4   0.214285714286
+5   0.642857142857
+6   0.785714285714
+7   0.357142857143
+Number of samples: 5
+Sample #0 has 5 observations.
+Sample #1 has 4 observations.
+Sample #2 has 6 observations.
+Sample #3 has 6 observations.
+Sample #4 has 5 observations.
+Iteration 1 likelihood: -16.4893
+Iteration 2 likelihood: -15.4406
+Iteration 3 likelihood: -15.3299
+
+Inferred Factor Graph:
+######################
+3
+
+3
+2 6 7 
+2 2 2 
+8
+0   0.396387112396
+1   0.356649908835
+2   0.603612887604
+3   0.643350091165
+4   0.805779039527
+5   0.669278114097
+6   0.194220960473
+7   0.330721885903
+
+3
+0 1 6 
+2 2 2 
+8
+0    1.03521336269
+1    1.54747895212
+2    2.31765218974
+3    1.28041900719
+4      4.922079813
+5    2.52725575019
+6   0.831279296316
+7   0.262805630803
+
+3
+1 2 4 
+2 2 2 
+8
+0   0.396387112396
+1   0.603612887604
+2   0.356649908835
+3   0.643350091165
+4   0.805779039527
+5   0.194220960473
+6   0.669278114097
+7   0.330721885903
+Number of samples: 5
+Sample #0 has 5 observations.
+Sample #1 has 4 observations.
+Sample #2 has 6 observations.
+Sample #3 has 6 observations.
+Sample #4 has 5 observations.
+Iteration 1 likelihood: -16.4893
+Iteration 2 likelihood: -17.6905
+Iteration 3 likelihood: -17.6582
+
+Inferred Factor Graph:
+######################
+3
+
+3
+2 6 7 
+2 2 2 
+8
+0   0.495312199726
+1   0.499107942908
+2   0.504687800274
+3   0.500892057092
+4   0.640416549958
+5   0.495122293924
+6   0.359583450042
+7   0.504877706076
+
+3
+0 1 6 
+2 2 2 
+8
+0   0.495312199726
+1   0.504687800274
+2   0.499107942908
+3   0.500892057092
+4   0.640416549958
+5   0.359583450042
+6   0.495122293924
+7   0.504877706076
+
+3
+1 2 4 
+2 2 2 
+8
+0   0.495312199726
+1   0.504687800274
+2   0.499107942908
+3   0.500892057092
+4   0.640416549958
+5   0.359583450042
+6   0.495122293924
+7   0.504877706076

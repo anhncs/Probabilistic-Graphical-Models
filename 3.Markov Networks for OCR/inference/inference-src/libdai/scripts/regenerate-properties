@@ -1,0 +1,347 @@
+#!/usr/bin/perl
+#
+# This file is part of libDAI - http://www.libdai.org/
+#
+# Copyright (c) 2006-2011, The libDAI authors. All rights reserved.
+#
+# Use of this source code is governed by a BSD-style license that can be found in the LICENSE file.
+
+
+use warnings;
+use strict;
+
+use Cwd 'abs_path';
+
+@ARGV == 2 or die "Need 2 arguments";
+
+my ($header_file,$source_file) = @ARGV;
+@ARGV=();
+
+# Regular expressions for nested brackets (uses perl 5.10 features)
+my ($nested_angle_brackets) = qr/(<(?:[^<>]++|(?1))*>)/;
+my ($nested_curly_brackets) = qr/({(?:[^{}]++|(?1))*})/;
+my ($nested_parentheses) = qr/(\((?:[^()]++|(?1))*\))/;
+
+# Patterns to match generated code blocks
+my ($gen_code_start_pat, $gen_code_end_pat, $props_start_pat) =
+  (qr(/\*.*GENERATED CODE: DO NOT EDIT.*),
+   qr(/\*.*END OF GENERATED CODE.*\*/),
+   qr(/\*.*PROPERTIES));
+# Actual delimiters to use for generated code blocks
+my ($gen_code_start, $gen_code_end) =
+  ("/* {{{ GENERATED CODE: DO NOT EDIT. Created by\n".
+   "    $0 $header_file $source_file\n*/\n",
+   "/* }}} END OF GENERATED CODE */\n");
+
+# Strings to hold text of files
+my $header_buffer="";
+my $source_buffer="";
+
+# ----------------------------------------------------------------
+# Useful routines
+
+# remove leading and trailing whitespace
+sub stripws ($) {
+  my ($s) = @_;
+  $s =~ s/^\s*//s;
+  $s =~ s/\s*$//s;
+  return $s;
+}
+
+# split comments and non-comments, returning 2-element array
+# of (uncommented part, comments)
+my $comment_pat = qr#(/\*[^*]*\*+(?:[^/*][^*]*\*+)*/|//[^\n]*)|("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|.[^/"'\\]*)#;
+sub sepcomment ($) {
+  my ($c) = @_;
+  my ($u) = $c;
+  $u =~ s#$comment_pat#defined $2 ? $2 : ""#gse;
+  $c =~ s#$comment_pat#defined $1 ? $1 : ""#gse;
+  return ($u, $c);
+}
+
+# Run diff, return output
+sub getdiff ($$) {
+  my ($a,$b) = @_;
+my $diff="";
+open DIFF, "diff -u \Q$a\E \Q$b\E |"
+  or die "Couldn't run diff";
+while(<DIFF>) {
+  $diff .= $_;
+}
+close DIFF;
+  return $diff;
+}
+
+sub myrename ($$) {
+  my ($a,$b) = @_;
+  $b = abs_path $b;
+  rename($a, $b) or die "Couldn't rename $a to $b";
+}
+
+sub writefile ($$) {
+  my ($buf, $f) = @_;
+  open OUT, ">", $f or die "Couldn't open $f for writing";
+  print OUT $buf;
+  close OUT;
+}
+
+our ($buffer);
+
+# Step through file, appending lines to buffer
+# - Lines which match generated code blocks are omitted
+# - Other lines are passed to the subroutine. They are added to buffer
+# unless the subroutine returns 1 (e.g. if it has already added them)
+sub process_file (&$) {
+  my ($sub, $file) = @_;
+  local ($buffer) = "";
+  # step through lines of file, appending each one to buffer
+  open IN, "<", $file or die "Couldn't open $file for reading";
+  while (<IN>) {
+    # delete anything between GENERATED CODE etc.
+    if (/$gen_code_end_pat/) {
+      die "Unmatched generated code block end at $file line $.";
+    } elsif (/$gen_code_start_pat/) {
+      my $s = $.;
+      my $found=0;
+      while (<IN>) {
+        chomp;
+        if (/$gen_code_end_pat/) {
+          $found=1;
+          last;
+        }
+      }
+      die "Unterminated generated code block at $file line $s"
+        unless $found;
+      next;
+    } else {
+      my ($res) = &$sub;
+      next if $res;
+    }
+    $buffer .= $_;
+  }
+  close IN;
+  return $buffer;
+}
+
+# Parse a PROPERTIES() block
+sub process_properties ($$$) {
+  my ($file, $start_line, $props_text) = @_;
+  my ($errline)="$file:$start_line";
+  $props_text =~ s/^.*PROPERTIES\s*($nested_parentheses)//s
+    or die "Malformed PROPERTIES, $errline: expected PROPERTIES(args)";
+  my ($args) = $1;
+  $args =~ s/^\(//g;
+  $args =~ s/\)$//g;
+  my (@args) = split /,/, $args;
+  @args == 2 or die "PROPERTIES needs two arguments at $errline";
+  my ($struct_name, $class) = @args;
+
+  $props_text =~ m/^\s*($nested_curly_brackets)\s*$/s
+    or die "Malformed PROPERTIES, $errline: expected {} after PROPERTIES";
+  my ($body) = $1;
+  $body =~ s/^{(.*)}$/$1/s; # get rid of curly brackets
+  my (@stmts) = split /;\s*\n/s, $body; # split on ";"
+  my (@typedecls) = ();
+  my (@vars) = ();
+  foreach my $s (@stmts) {
+    my ($s, $cmt) = sepcomment $s;
+    $cmt = stripws $cmt;
+    if($s =~ /^\s*$/s) { # extra ";"
+      next;
+    } elsif($s =~ /DAI_ENUM|typedef/) {
+      push @typedecls, [stripws $s, $cmt];
+    } else {
+      $s =~ /^\s*[a-zA-Z_][\w:]+\s*$nested_angle_brackets?/
+        or die "Couldn't match statement $s in PROPERTIES at $errline";
+      my $type = stripws $&;
+      my $name = stripws $';
+      my $default = undef;
+      if($name =~ /^(.*)=(.*)$/) {
+        $name = stripws $1;
+        $default = stripws $2;
+      }
+      push @vars, [$type, $name, $default, $cmt];
+    }
+  }
+
+  my ($stext) = "";
+  my ($text) = <<EOF;
+        struct Properties {
+EOF
+  my $indent = (' 'x12);
+  for my $d (@typedecls) {
+    my ($decl,$cmt) = @$d;
+    if($cmt ne '') {
+      $text .= join("\n", map { "$indent$_" } split /\n/s, $cmt)."\n";
+    }
+    $text .= "$indent$decl;\n"
+  }
+  for my $v (@vars) {
+    my ($type,$name,$default,$cmt) = @$v;
+    if($cmt ne '') {
+      $text .= join("\n", map { "$indent$_" } split /\n/s, $cmt)."\n"
+    }
+    $text .= "$indent$type $name;\n";
+  }
+
+  $text .= <<EOF;
+
+            /// Set members from PropertySet
+            /** \\throw UNKNOWN_PROPERTY if a Property key is not recognized
+             *  \\throw NOT_ALL_PROPERTIES_SPECIFIED if an expected Property is missing
+             */
+            void set(const PropertySet &opts);
+            /// Get members into PropertySet
+            PropertySet get() const;
+            /// Convert to a string which can be parsed as a PropertySet
+            std::string toString() const;
+        } $struct_name;
+EOF
+
+  $stext .= <<EOF;
+namespace dai {
+
+void ${class}::Properties::set(const PropertySet &opts)
+{
+    const std::set<PropertyKey> &keys = opts.keys();
+    std::string errormsg;
+    for( std::set<PropertyKey>::const_iterator i = keys.begin(); i != keys.end(); i++ ) {
+EOF
+  for my $v (@vars) {
+    my ($type,$name,$default,$cmt) = @$v;
+    $stext .= <<EOF;
+        if( *i == "$name" ) continue;
+EOF
+  }
+  $stext .= <<EOF;
+        errormsg = errormsg + "$class: Unknown property " + *i + "\\n";
+    }
+    if( !errormsg.empty() )
+        DAI_THROWE(UNKNOWN_PROPERTY, errormsg);
+EOF
+  for my $v (@vars) {
+    my ($type,$name,$default,$cmt) = @$v;
+    if(!defined $default) {
+      $stext .= <<EOF;
+    if( !opts.hasKey("$name") )
+        errormsg = errormsg + "$class: Missing property \\\"$name\\\" for method \\\"\Q$class\E\\\"\\n";
+EOF
+    }
+
+  }
+  $stext .= <<EOF;
+    if( !errormsg.empty() )
+        DAI_THROWE(NOT_ALL_PROPERTIES_SPECIFIED,errormsg);
+EOF
+  for my $v (@vars) {
+    my ($type,$name,$default,$cmt) = @$v;
+    if(defined $default) {
+      $stext .= <<EOF;
+    if( opts.hasKey("$name") ) {
+        $name = opts.getStringAs<$type>("$name");
+    } else {
+        $name = $default;
+    }
+EOF
+    } else {
+      $stext .= <<EOF;
+    $name = opts.getStringAs<$type>("$name");
+EOF
+    }
+  }
+
+  $stext .= <<EOF;
+}
+PropertySet ${class}::Properties::get() const {
+    PropertySet opts;
+EOF
+
+  for my $v (@vars) {
+    my ($type,$name,$default,$cmt) = @$v;
+#     $text .= qq{opts.set("$name", $name);};
+    $stext .= <<EOF;
+    opts.set("$name", $name);
+EOF
+
+  }
+  $stext .= <<EOF;
+    return opts;
+}
+string ${class}::Properties::toString() const {
+    stringstream s(stringstream::out);
+    s << "[";
+EOF
+
+  my ($i)=0;
+  for my $v (@vars) {
+    my ($type,$name,$default,$cmt) = @$v;
+    $i++;
+    my $c = ($i<@vars)?" << \",\"":"";
+      $stext .= <<EOF;
+    s << "$name=" << $name$c;
+EOF
+  }
+
+  $stext .= <<EOF;
+    s << "]";
+    return s.str();
+}
+} // end of namespace dai
+EOF
+  return ($gen_code_start.$text.$gen_code_end, $gen_code_start.$stext.$gen_code_end);
+}
+
+# ----------------------------------------------------------------
+# Main loop
+
+$source_buffer = process_file { return 0; } $source_file;
+$source_buffer =~ s/\n+$//s;
+
+$header_buffer = process_file {
+  if (/$props_start_pat/) {
+    # when we see something resembling properties, record it, and when we
+    # get to the end, process and emit the generated code
+    my $start_line = $.;
+    my $props_text = $_;
+    while (<IN>) {
+      last if(m(\*/));
+      $props_text .= $_;
+    }
+    $buffer .= $props_text;
+    $buffer .= $_;
+    my ($htext, $stext) = process_properties($header_file, $start_line, $props_text);
+    $buffer .= $htext;
+    $source_buffer .= "\n\n\n".$stext;
+    return 1;
+  }
+  return 0;
+} $header_file;
+
+# Write new contents of files to temporary locations
+my $header_tmp = "$header_file.new";
+my $source_tmp = "$source_file.new";
+writefile ($header_buffer, $header_tmp);
+writefile ($source_buffer, $source_tmp);
+
+# Get a diff of changes, show it to the user, and ask for confirmation
+my ($diff);
+$diff = getdiff ($header_file, $header_tmp);
+$diff .= getdiff ($source_file, $source_tmp);
+
+if($diff eq '') {
+  warn "No differences\n";
+} else {
+  my $pager = $ENV{PAGER} || "less";
+  open PAGER, "|$pager";
+  print PAGER $diff;
+  close PAGER;
+
+  print STDERR "Replace old with new version? (y|N) ";
+  $_=<>;
+  if (/^y/i) {
+    myrename($header_tmp, $header_file);
+    myrename($source_tmp, $source_file);
+  } else {
+    warn "Aborted\n";
+  }
+}
