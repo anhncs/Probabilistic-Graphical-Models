@@ -1,0 +1,273 @@
+net
+{
+	huginenginegenerator3061656038650325130L = "edu.ucla.belief.inference.JoinTreeSettings@4a89f7";
+	node_size = (90.0 36.0);
+}
+
+node JamesParent1Gene2Copy
+{
+	states = ("B" "b" );
+	position = (650 200);
+	excludepolicy = "include whole CPT";
+	ismapvariable = "false";
+	lablel = "JamesParent1Gene2Copy";
+	DSLxEXTRA_DEFINITIONxDIAGNOSIS_TYPE = "AUXILIARY";
+	diagnosistype = "AUXILIARY";
+}
+node RobinParent1Gene2Copy
+{
+	states = ("B" "b" );
+	position = (130 402);
+	excludepolicy = "include whole CPT";
+	ismapvariable = "false";
+	lablel = "RobinParent1Gene2Copy";
+	DSLxEXTRA_DEFINITIONxDIAGNOSIS_TYPE = "AUXILIARY";
+	diagnosistype = "AUXILIARY";
+}
+node RobinParent2Gene1Copy
+{
+	states = ("M" "m" );
+	position = (260 400);
+	excludepolicy = "include whole CPT";
+	ismapvariable = "false";
+	lablel = "RobinParent2Gene1Copy";
+	DSLxEXTRA_DEFINITIONxDIAGNOSIS_TYPE = "AUXILIARY";
+	diagnosistype = "AUXILIARY";
+}
+node RobinParent2Gene2Copy
+{
+	states = ("B" "b" );
+	position = (390 400);
+	excludepolicy = "include whole CPT";
+	ismapvariable = "false";
+	lablel = "RobinParent2Gene2Copy";
+	DSLxEXTRA_DEFINITIONxDIAGNOSIS_TYPE = "AUXILIARY";
+	diagnosistype = "AUXILIARY";
+}
+node IraParent1Gene2Copy
+{
+	states = ("B" "b" );
+	position = (1170 400);
+	excludepolicy = "include whole CPT";
+	ismapvariable = "false";
+	lablel = "IraParent1Gene2Copy";
+	DSLxEXTRA_DEFINITIONxDIAGNOSIS_TYPE = "AUXILIARY";
+	diagnosistype = "AUXILIARY";
+}
+node IraParent1Gene1Copy
+{
+	states = ("M" "m" );
+	position = (1040 400);
+	excludepolicy = "include whole CPT";
+	ismapvariable = "false";
+	lablel = "IraParent1Gene1Copy";
+	DSLxEXTRA_DEFINITIONxDIAGNOSIS_TYPE = "AUXILIARY";
+	diagnosistype = "AUXILIARY";
+}
+node RobinParent1Gene1Copy
+{
+	states = ("M" "m" );
+	position = (0 400);
+	excludepolicy = "include whole CPT";
+	ismapvariable = "false";
+	lablel = "RobinParent1Gene1Copy";
+	DSLxEXTRA_DEFINITIONxDIAGNOSIS_TYPE = "AUXILIARY";
+	diagnosistype = "AUXILIARY";
+}
+node IraParent2Gene1Copy
+{
+	states = ("M" "m" );
+	position = (1300 400);
+	excludepolicy = "include whole CPT";
+	ismapvariable = "false";
+	lablel = "IraParent2Gene1Copy";
+	DSLxEXTRA_DEFINITIONxDIAGNOSIS_TYPE = "AUXILIARY";
+	diagnosistype = "AUXILIARY";
+}
+node IraParent2Gene2Copy
+{
+	states = ("B" "b" );
+	position = (1430 400);
+	excludepolicy = "include whole CPT";
+	ismapvariable = "false";
+	lablel = "IraParent2Gene2Copy";
+	DSLxEXTRA_DEFINITIONxDIAGNOSIS_TYPE = "AUXILIARY";
+	diagnosistype = "AUXILIARY";
+}
+node IraPhenotype
+{
+	states = ("SpinalMuscularAtrophy" "NoSpinalMuscularAtrophy" );
+	position = (1235 300);
+	excludepolicy = "include whole CPT";
+	ismapvariable = "false";
+	lablel = "IraPhenotype";
+	DSLxEXTRA_DEFINITIONxDIAGNOSIS_TYPE = "AUXILIARY";
+	diagnosistype = "AUXILIARY";
+}
+node JamesParent2Gene2Copy
+{
+	states = ("B" "b" );
+	position = (910 200);
+	excludepolicy = "include whole CPT";
+	ismapvariable = "false";
+	lablel = "JamesParent2Gene2Copy";
+	DSLxEXTRA_DEFINITIONxDIAGNOSIS_TYPE = "AUXILIARY";
+	diagnosistype = "AUXILIARY";
+}
+node JamesParent1Gene1Copy
+{
+	states = ("M" "m" );
+	position = (520 200);
+	excludepolicy = "include whole CPT";
+	ismapvariable = "false";
+	lablel = "JamesParent1Gene1Copy";
+	DSLxEXTRA_DEFINITIONxDIAGNOSIS_TYPE = "AUXILIARY";
+	diagnosistype = "AUXILIARY";
+}
+node JamesParent2Gene1Copy
+{
+	states = ("M" "m" );
+	position = (780 200);
+	excludepolicy = "include whole CPT";
+	ismapvariable = "false";
+	lablel = "JamesParent2Gene1Copy";
+	DSLxEXTRA_DEFINITIONxDIAGNOSIS_TYPE = "AUXILIARY";
+	diagnosistype = "AUXILIARY";
+}
+node JamesPhenotype
+{
+	states = ("SpinalMuscularAtrophy" "NoSpinalMuscularAtrophy" );
+	position = (705 100);
+	excludepolicy = "include whole CPT";
+	ismapvariable = "false";
+	lablel = "JamesPhenotype";
+	DSLxEXTRA_DEFINITIONxDIAGNOSIS_TYPE = "AUXILIARY";
+	diagnosistype = "AUXILIARY";
+}
+node RobinPhenotype
+{
+	states = ("SpinalMuscularAtrophy" "NoSpinalMuscularAtrophy" );
+	position = (195 300);
+	excludepolicy = "include whole CPT";
+	ismapvariable = "false";
+	lablel = "RobinPhenotype";
+	DSLxEXTRA_DEFINITIONxDIAGNOSIS_TYPE = "AUXILIARY";
+	diagnosistype = "AUXILIARY";
+}
+potential ( JamesParent1Gene2Copy | IraParent1Gene2Copy IraParent2Gene2Copy )
+{
+	data = (((	1.0	0.0	)
+		(	0.5	0.5	))
+		((	0.5	0.5	)
+		(	0.0	1.0	)));
+}
+potential ( RobinParent1Gene2Copy | )
+{
+	data = (	0.3	0.7	);
+}
+potential ( RobinParent2Gene1Copy | )
+{
+	data = (	0.2	0.8	);
+}
+potential ( RobinParent2Gene2Copy | )
+{
+	data = (	0.3	0.7	);
+}
+potential ( IraParent1Gene2Copy | )
+{
+	data = (	0.3	0.7	);
+}
+potential ( IraParent1Gene1Copy | )
+{
+	data = (	0.2	0.8	);
+}
+potential ( RobinParent1Gene1Copy | )
+{
+	data = (	0.2	0.8	);
+}
+potential ( IraParent2Gene1Copy | )
+{
+	data = (	0.2	0.8	);
+}
+potential ( IraParent2Gene2Copy | )
+{
+	data = (	0.3	0.7	);
+}
+potential ( IraPhenotype | IraParent1Gene1Copy IraParent1Gene2Copy IraParent2Gene1Copy IraParent2Gene2Copy )
+{
+	data = (((((	0.99959	4.1E-4	)
+		(	0.858149	0.141851	))
+		((	0.997762	0.002238	)
+		(	0.524979	0.475021	)))
+		(((	0.858149	0.141851	)
+		(	0.014774	0.985226	))
+		((	0.524979	0.475021	)
+		(	0.002732	0.997268	))))
+		((((	0.997762	0.002238	)
+		(	0.524979	0.475021	))
+		((	0.987872	0.012128	)
+		(	0.167982	0.832018	)))
+		(((	0.524979	0.475021	)
+		(	0.002732	0.997268	))
+		((	0.167982	0.832018	)
+		(	5.0E-4	0.9995	)))));
+}
+potential ( JamesParent2Gene2Copy | RobinParent1Gene2Copy RobinParent2Gene2Copy )
+{
+	data = (((	1.0	0.0	)
+		(	0.5	0.5	))
+		((	0.5	0.5	)
+		(	0.0	1.0	)));
+}
+potential ( JamesParent1Gene1Copy | IraParent1Gene1Copy IraParent2Gene1Copy )
+{
+	data = (((	1.0	0.0	)
+		(	0.5	0.5	))
+		((	0.5	0.5	)
+		(	0.0	1.0	)));
+}
+potential ( JamesParent2Gene1Copy | RobinParent1Gene1Copy RobinParent2Gene1Copy )
+{
+	data = (((	1.0	0.0	)
+		(	0.5	0.5	))
+		((	0.5	0.5	)
+		(	0.0	1.0	)));
+}
+potential ( JamesPhenotype | JamesParent1Gene1Copy JamesParent1Gene2Copy JamesParent2Gene1Copy JamesParent2Gene2Copy )
+{
+	data = (((((	0.99959	4.1E-4	)
+		(	0.858149	0.141851	))
+		((	0.997762	0.002238	)
+		(	0.524979	0.475021	)))
+		(((	0.858149	0.141851	)
+		(	0.014774	0.985226	))
+		((	0.524979	0.475021	)
+		(	0.002732	0.997268	))))
+		((((	0.997762	0.002238	)
+		(	0.524979	0.475021	))
+		((	0.987872	0.012128	)
+		(	0.167982	0.832018	)))
+		(((	0.524979	0.475021	)
+		(	0.002732	0.997268	))
+		((	0.167982	0.832018	)
+		(	5.0E-4	0.9995	)))));
+}
+potential ( RobinPhenotype | RobinParent1Gene1Copy RobinParent1Gene2Copy RobinParent2Gene1Copy RobinParent2Gene2Copy )
+{
+	data = (((((	0.99959	4.1E-4	)
+		(	0.858149	0.141851	))
+		((	0.997762	0.002238	)
+		(	0.524979	0.475021	)))
+		(((	0.858149	0.141851	)
+		(	0.014774	0.985226	))
+		((	0.524979	0.475021	)
+		(	0.002732	0.997268	))))
+		((((	0.997762	0.002238	)
+		(	0.524979	0.475021	))
+		((	0.987872	0.012128	)
+		(	0.167982	0.832018	)))
+		(((	0.524979	0.475021	)
+		(	0.002732	0.997268	))
+		((	0.167982	0.832018	)
+		(	5.0E-4	0.9995	)))));
+}
